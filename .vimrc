@@ -36,6 +36,7 @@
 "    -> Spell checking
 "    -> Misc
 "    -> Helper functions
+"    -> Customize
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -336,7 +337,6 @@ map <leader>q :e ~/buffer<cr>
 map <leader>pp :setlocal paste!<cr>
 
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -397,3 +397,29 @@ function! <SID>BufcloseCloseIt()
    endif
 endfunction
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Customize
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"映射F2为开关文件目录列表
+map <F2> :Explore<CR>
+"映射F3为查找当前光标位置的词出现的地方
+map <F3> :cs find s <C-R><C-A><CR>
+"映射F4为切换显示函数列表
+map <F4> :TlistToggle<CR>
+
+" Find tags file recursively
+set tags=tags; 
+set autochdir 
+
+" Autoload cscope database
+function! LoadCscope()
+  let db = findfile("cscope.out", ".;")
+  if (!empty(db))
+    let path = strpart(db, 0, match(db, "/cscope.out$"))
+    set nocscopeverbose " suppress 'duplicate connection' error
+    exe "cs add " . db . " " . path
+    set cscopeverbose
+  endif
+endfunction
+au BufEnter /* call LoadCscope()
